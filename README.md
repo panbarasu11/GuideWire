@@ -224,3 +224,5 @@ This project creates an AI-powered parametric insurance platform that
 protects gig delivery workers from income loss caused by external
 disruptions. It provides automated claims, instant payouts, and AI-based
 risk assessment, helping gig workers gain financial security.
+
+------------------------------------------------------------------------
