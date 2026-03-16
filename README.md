@@ -64,7 +64,6 @@ Workers get automatic compensation when disruption conditions are met.
   Workers select insurance coverage.
 
   Plan       Weekly Premium   Coverage
-  ---------- ---------------- ----------
   Basic      ₹20              ₹500
   Standard   ₹30              ₹800
   Premium    ₹50              ₹1200
@@ -82,7 +81,6 @@ Workers get automatic compensation when disruption conditions are met.
   Example triggers:
 
   Event          Condition
-  -------------- ---------------------
   Heavy Rain     Rainfall \> 60mm
   Extreme Heat   Temperature \> 42°C
   Pollution      AQI \> 300
