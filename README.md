@@ -1,226 +1,83 @@
-AI-Powered Parametric Insurance for Gig Delivery Workers
-
-1. Problem Statement
-
-Gig delivery workers in India (Swiggy, Zomato, Amazon, Zepto etc.)
-depend on daily earnings. External disruptions such as heavy rain,
-extreme heat, floods, pollution, or curfews reduce their working hours
-and lead to income loss.
-
-Currently, these workers have no income protection against such
-uncontrollable situations. This project builds an AI-powered parametric
-insurance platform that automatically protects gig workers from income
-loss caused by these disruptions.
-
-------------------------------------------------------------------------
-
-2. Person
-
-Name: Raj
-Age: 26
-Occupation: Food Delivery Partner
-Platform: Swiggy / Zomato
-City: Chennai
-
-Scenario
-
-Raj usually works 6 days per week and earns around ₹4000--₹6000 weekly.
-When heavy rain or extreme heat occurs, deliveries reduce and he loses
-income.
-
-Example situations: - Heavy Rain → deliveries stop → income loss -
-Extreme Heat → cannot work long hours - Curfew → no deliveries allowed
-
-Our system protects workers like Raj by automatically compensating lost
-income.
-
-------------------------------------------------------------------------
-
-3. Solution Overview
-
-The platform provides AI-driven parametric insurance that: 1. Registers
-delivery workers 2. Calculates weekly premium dynamically 3. Monitors
-environmental disruptions 4. Automatically triggers claims 5. Provides
-instant payouts
-
-Workers get automatic compensation when disruption conditions are met.
-
-------------------------------------------------------------------------
-
-4. Application Workflow
-
-  1. User Registration
-
-  Workers create an account using: - Name - Phone number - Delivery
-  platform - Work location
-
-  2. Risk Profiling
-
-  AI analyzes: - Worker location - Historical weather data - Pollution
-  levels - Disruption history
-
-  3. Policy Creation
-
-  Workers select insurance coverage.
-
-  Plan       Weekly Premium   Coverage
-  Basic      ₹20              ₹500
-  Standard   ₹30              ₹800
-  Premium    ₹50              ₹1200
-
-  4. Real-Time Monitoring
-
-  The system continuously monitors: - Weather APIs - Pollution APIs -
-  Traffic data
-
-  5. Parametric Triggers
-
-  If disruption thresholds are crossed, the system triggers a claim
-  automatically.
-
-  Example triggers:
-
-  Event          Condition
-  Heavy Rain     Rainfall \> 60mm
-  Extreme Heat   Temperature \> 42°C
-  Pollution      AQI \> 300
-  Curfew         Government alert
-
-  6. Automatic Claim Processing
-
-  The system verifies worker location and approves claims automatically.
-
-  7. Instant Payout
-
-  Payout is processed via: - UPI - Bank Transfer - Wallet
-
-  ------------------------------------------------------------------------
-
-  Weekly Premium Model
-
-  Premium is calculated weekly based on expected earnings.
-
-  Example: Weekly earnings = ₹5000
-
-  Premium = 1--2% of weekly income
-
-  Example: Premium = ₹40/week\
-  Coverage = up to ₹1000 income protection.
-
-------------------------------------------------------------------------
-
-5. AI/ML Integration
-
-Risk Prediction
-
-Machine learning predicts risk level using: - Location - Weather
-history - Pollution data
-
-Possible models: - Random Forest - Linear Regression
-
-Dynamic Premium Calculation
-
-Premium adjusts dynamically based on risk level of the delivery zone.
-
-Fraud Detection
-
-AI detects: - GPS spoofing - Duplicate claims - Fake disruption claims
-
-Techniques: - Anomaly detection - Pattern analysis
-
-------------------------------------------------------------------------
-
-6. Technology Stack
-
-Frontend
-
--   React.js
--   HTML
--   CSS
--   JavaScript
-
-Backend
-
--   Python (Flask / FastAPI)
--   Node.js
-
-AI/ML
-
--   Python
--   Scikit-learn
--   Pandas
--   NumPy
-
-APIs
-
--   OpenWeather API
--   AQI API
--   Google Maps API
-
-Payments
-
--   Razorpay (test mode)
--   Stripe sandbox
-
-Database
-
--   MongoDB / PostgreSQL
-
-Deployment
-
--   AWS
--   Firebase
--   Vercel / Render
-
-------------------------------------------------------------------------
-
-7. Development Plan
-
-Week 1--2
-
-Research, ideation, system design.
-
-Week 3--4
-
-Build core system: - Registration - Policy management - Premium
-calculation
-
-Week 5--6
-
-Add: - Fraud detection - Automated claim triggers - Dashboard
-
-------------------------------------------------------------------------
-
-8. Expected Features
-
-Worker Dashboard
-
--   Active insurance policy
--   Earnings protected
--   Claim history
-
-Admin Dashboard
-
--   Risk analytics
--   Claim monitoring
--   Fraud detection alerts
-
-------------------------------------------------------------------------
-
-9. Future Improvements
-
--   Integration with delivery platforms
--   Real-time traffic analysis
--   Advanced AI risk prediction
--   Blockchain claim verification
-
-------------------------------------------------------------------------
-
-10. Conclusion
-
-This project creates an AI-powered parametric insurance platform that
-protects gig delivery workers from income loss caused by external
-disruptions. It provides automated claims, instant payouts, and AI-based
-risk assessment, helping gig workers gain financial security.
-
-------------------------------------------------------------------------
+# 🛡️ AI-Powered Parametric Insurance for Gig Workers
+
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
+![Python](https://img.shields.io/badge/Backend-Python_FastAPI-green.svg)
+![React](https://img.shields.io/badge/Frontend-React.js-blue.svg)
+![Machine Learning](https://img.shields.io/badge/AI-Scikit_Learn-orange.svg)
+
+## 📌 Overview
+Gig delivery workers in India (Swiggy, Zomato, Amazon, Zepto, etc.) depend heavily on daily earnings. When extreme weather (heavy rain, heatwaves), severe pollution, or curfews strike, their income halts. Traditional insurance doesn't cover this "lost time." 
+
+This project is an **AI-powered parametric insurance platform** that automatically protects gig workers from income loss. Instead of filing manual claims, the system monitors environmental APIs and triggers **instant payouts** the moment predefined disruption thresholds are crossed.
+
+---
+
+## 🎯 The Problem & Persona
+**Meet Raj (26), a Food Delivery Partner in Chennai:**
+- **Earnings:** ₹4000–₹6000/week working 6 days.
+- **Pain Point:** If heavy rain floods the streets, he loses ₹1000+ in a single day. 
+- **The Solution:** Raj pays a micro-premium of ₹30/week. When rainfall exceeds 60mm in his zone, he automatically receives ₹800 directly to his UPI—no paperwork required.
+
+---
+
+## ✨ Core Features
+- **⚡ Smart Parametric Triggers:** Payouts are automatically triggered based on real-time API data (Weather, AQI, Gov Alerts).
+- **🧠 AI Risk Profiling & Dynamic Pricing:** Uses Machine Learning to predict risk levels based on location, weather history, and pollution data to adjust weekly premiums.
+- **🛡️ Fraud Detection:** AI-driven anomaly detection to prevent GPS spoofing and duplicate claims.
+- **💸 Instant UPI Payouts:** Zero wait time for claim processing.
+
+---
+
+## ⚙️ How It Works (The Workflow)
+1. **Registration:** Worker signs up and selects a coverage plan.
+2. **Risk Profiling:** AI analyzes historical data for their specific delivery zone.
+3. **Continuous Monitoring:** Background workers constantly poll OpenWeather, AQI, and local alert APIs.
+4. **Threshold Crossed:** E.g., Temperature hits 42°C.
+5. **Instant Claim Processing:** The system verifies the worker's active location.
+6. **Payout:** Compensation is instantly routed to the worker's wallet/bank.
+
+---
+
+## 📊 Subscription Plans & Triggers
+
+### Weekly Micro-Premiums
+| Plan | Weekly Premium | Coverage (Max Payout) |
+| :--- | :--- | :--- |
+| **Basic** | ₹20 | ₹500 |
+| **Standard** | ₹30 | ₹800 |
+| **Premium** | ₹50 | ₹1200 |
+
+### Parametric Thresholds
+| Event | Trigger Condition | Data Source |
+| :--- | :--- | :--- |
+| **Heavy Rain** | Rainfall > 60mm | OpenWeather API |
+| **Extreme Heat** | Temperature > 42°C | OpenWeather API |
+| **Pollution** | AQI > 300 | AQI API |
+| **Curfew/Riot** | Government Alert Issued | News/Gov Data Feeds |
+
+---
+
+## 💻 Technology Stack
+
+* **Frontend:** React.js, Tailwind CSS (Mobile-first)
+* **Backend:** Python (FastAPI / Flask) or Node.js
+* **AI / ML:** Python, Scikit-learn, Pandas, NumPy (Random Forest, Anomaly Detection)
+* **Database:** PostgreSQL (Relational/Policies) + MongoDB (Event Logs)
+* **APIs:** OpenWeather API, AQI API, Google Maps API
+* **Payments:** Razorpay / Stripe (Sandbox)
+* **Deployment:** AWS / Vercel / Firebase
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (v16+)
+- Python (3.9+)
+- API Keys for OpenWeather and Razorpay
+
+### Installation
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/yourusername/gig-parametric-insurance.git](https://github.com/yourusername/gig-parametric-insurance.git)
+   cd gig-parametric-insurance
