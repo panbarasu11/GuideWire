@@ -56,14 +56,25 @@ This platform must be Mobile. Web-based dashboards are impractical for riders wh
 
 AI is the brain of this platform, transforming it from a static insurance tool into a dynamic, risk-aware engine.
 
-* **Dynamic Premium Calculation (Predictive ML):** We use a Random Forest Regressor to ingest historical local weather data, seasonal trends, and current forecasts. If the model predicts an 80% chance of monsoon floods next week in Chennai, Raj's premium dynamically adjusts from ₹30 to ₹35 to account for the heightened risk probability.
-* **Fraud Detection (Anomaly Detection):** To prevent exploitation, an Isolation Forest model analyzes claim patterns. It flags anomalies such as:
+* **Dynamic Premium Calculation (Predictive ML):** We use a **Random Forest Regressor** to ingest historical local weather data, seasonal trends, and current forecasts. If the model predicts an 80% chance of monsoon floods next week in Chennai, Raj's premium dynamically adjusts from ₹30 to ₹35 to account for the heightened risk probability.
+* **Fraud Detection (Anomaly Detection):** To prevent exploitation, an **Isolation Forest** model analyzes claim patterns. It flags anomalies such as:
     * **GPS Spoofing:** Sudden, impossible jumps in location (e.g., Chennai to Madurai in 5 minutes) just to claim a weather payout.
     * **Velocity Checks:** Ensuring the device shows movement consistent with a delivery vehicle before the disruption hit.
 
 ---
 
-## 4. Tech Stack & Development Plan
+## 4. Adversarial Defense & Anti-Spoofing Strategy
+
+In a parametric system where location is the primary trigger, protecting against "virtual farming" (users spoofing location to high-risk zones) is critical.
+
+* **Sensor Fusion Verification:** We don't rely solely on GPS. The app cross-references **Cell Tower IDs** and **WiFi SSID fingerprints** against the reported latitude/longitude. If a user claims to be in a flooded zone but their IP address or nearby WiFi networks suggest otherwise, the payout is suspended.
+* **Activity Correlation:** Using the mobile device's **Accelerometer and Gyroscope**, the AI verifies "Work Signature." A legitimate gig worker has a movement pattern consistent with riding a bike (vibration, lean angles, stop-and-start traffic). Static devices or perfectly linear simulated movements are flagged as bots.
+* **Hardware Attestation:** We utilize **Google Play Integrity API** (Android) and **DeviceCheck** (iOS) to ensure the app is running on an unrooted, genuine device. This prevents attackers from using emulators or modified OS versions designed to inject fake location data into the system.
+* **Multi-Oracle Consensus:** To prevent "Data Spoofing" at the API level, the system uses a consensus of at least three weather providers (e.g., OpenWeather, AccuWeather, and local IMD data). A payout only triggers if at least two sources confirm the threshold breach, protecting the pool against individual API errors or hacks.
+
+---
+
+## 5. Tech Stack & Development Plan
 
 ### Technology Stack
 * **Frontend:** React Native (Mobile App) / Tailwind CSS
@@ -81,5 +92,5 @@ AI is the brain of this platform, transforming it from a static insurance tool i
 
 ---
 
-## 5. Future Roadmap & Relevance
+## 6. Future Roadmap & Relevance
 To scale, this platform will eventually aim for B2B2C integration directly with delivery aggregators. Instead of Raj buying the policy individually, platforms like Swiggy could integrate our API to offer this parametric insurance as a built-in perk to retain their top-performing "Star" riders, deducting the ₹30 premium directly from their weekly platform ledger.
