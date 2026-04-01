@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KAVACH AI — VisionX</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0f1e;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: rgba(255,255,255,0.08);
+    --accent: #3b82f6;
+    --accent2: #06b6d4;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --text: #f1f5f9;
+    --muted: #64748b;
+    --muted2: #94a3b8;
+    --font: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  /* Mobile shell */
+  .phone {
+    width: 390px;
+    min-height: 844px;
+    background: var(--surface);
+    border-radius: 48px;
+    border: 1.5px solid rgba(255,255,255,0.12);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+
+  /* Status bar */
+  .statusbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 28px 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted2);
+  }
+
+  /* Screens */
+  .screen { display: none; flex-direction: column; height: 100%; animation: fadeUp 0.3s ease; }
+  .screen.active { display: flex; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .screen-body { flex: 1; overflow-y: auto; padding: 20px 24px 32px; }
+  .screen-body::-webkit-scrollbar { display: none; }
+
+  /* Nav */
+  .nav { display: flex; justify-content: space-around; padding: 12px 0 20px; border-top: 1px solid var(--border); background: var(--surface); }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.4; transition: opacity 0.2s; }
+  .nav-item.active { opacity: 1; }
+  .nav-icon { font-size: 20px; }
+  .nav-label { font-size: 10px; color: var(--muted2); }
+  .nav-item.active .nav-label { color: var(--accent); }
+
+  /* Typography */
+  .screen-title { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+  .screen-sub { font-size: 14px; color: var(--muted2); margin-bottom: 24px; }
+
+  /* Cards */
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card-label { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .card-value { font-size: 22px; font-weight: 600; }
+  .card-sub { font-size: 13px; color: var(--muted2); margin-top: 4px; }
+
+  /* Inputs */
+  .input-group { margin-bottom: 16px; }
+  .input-label { font-size: 12px; color: var(--muted2); margin-bottom: 6px; display: block; }
+  .input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .input:focus { border-color: var(--accent); }
+  .input::placeholder { color: var(--muted); }
+  select.input { cursor: pointer; }
+
+  /* Buttons */
+  .btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    border: none;
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-success { background: var(--success); color: white; }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+
+  /* Badges */
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-success { background: rgba(16,185,129,0.15); color: var(--success); }
+  .badge-warning { background: rgba(245,158,11,0.15); color: var(--warning); }
+  .badge-danger { background: rgba(239,68,68,0.15); color: var(--danger); }
+  .badge-info { background: rgba(59,130,246,0.15); color: var(--accent); }
+
+  /* Plan cards */
+  .plan-card {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .plan-card:hover { border-color: var(--accent); }
+  .plan-card.selected { border-color: var(--accent); background: rgba(59,130,246,0.08); }
+  .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .plan-name { font-size: 16px; font-weight: 600; }
+  .plan-price { font-size: 20px; font-weight: 700; color: var(--accent); }
+  .plan-price span { font-size: 13px; color: var(--muted2); font-weight: 400; }
+  .plan-coverage { font-size: 13px; color: var(--muted2); }
+
+  /* Trigger cards */
+  .trigger-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .trigger-icon { font-size: 28px; width: 44px; text-align: center; }
+  .trigger-info { flex: 1; }
+  .trigger-name { font-size: 14px; font-weight: 500; }
+  .trigger-condition { font-size: 12px; color: var(--muted2); margin-top: 2px; }
+  .trigger-status { font-size: 12px; }
+
+  /* Premium meter */
+  .meter-bar { height: 8px; background: var(--bg); border-radius: 4px; margin: 8px 0; overflow: hidden; }
+  .meter-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+
+  /* Row */
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .row:last-child { border-bottom: none; }
+  .row-label { font-size: 14px; color: var(--muted2); }
+  .row-value { font-size: 14px; font-weight: 500; }
+
+  /* Payout animation */
+  .payout-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 500px; text-align: center; }
+  .payout-circle {
+    width: 120px; height: 120px; border-radius: 50%;
+    background: rgba(16,185,129,0.1); border: 3px solid var(--success);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px; margin-bottom: 24px;
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.3)} 50%{box-shadow:0 0 0 20px rgba(16,185,129,0)} }
+
+  .alert-banner {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .alert-icon { font-size: 20px; }
+  .alert-text { font-size: 13px; color: #fca5a5; line-height: 1.5; }
+
+  /* Profile avatar */
+  .avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+
+  /* Step indicator */
+  .steps { display: flex; gap: 6px; margin-bottom: 24px; }
+  .step { flex: 1; height: 3px; background: var(--border); border-radius: 2px; transition: background 0.3s; }
+  .step.done { background: var(--accent); }
+
+  /* Mono tag */
+  .mono { font-family: var(--mono); font-size: 12px; color: var(--accent2); }
+
+  /* Risk multiplier display */
+  .risk-num { font-size: 48px; font-weight: 700; font-family: var(--mono); color: var(--warning); }
+
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+  /* History item */
+  .history-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .history-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+  .history-dot.pending { background: var(--warning); }
+  .history-info { flex: 1; }
+  .history-title { font-size: 14px; font-weight: 500; }
+  .history-date { font-size: 12px; color: var(--muted2); }
+  .history-amount { font-size: 15px; font-weight: 600; color: var(--success); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <span>KAVACH AI</span>
+    <span>●●●</span>
+  </div>
+
+  <!-- SCREEN 1: REGISTRATION -->
+  <div class="screen active" id="screen-register">
+    <div class="screen-body">
+      <div style="margin-bottom:28px;margin-top:8px;">
+        <div style="font-size:28px;font-weight:700;margin-bottom:4px;">Welcome to<br/><span style="color:var(--accent)">KAVACH AI</span> 🛡️</div>
+        <div style="font-size:14px;color:var(--muted2);">Income protection for delivery workers</div>
+      </div>
+
+      <div class="steps">
+        <div class="step done" id="step1-1"></div>
+        <div class="step" id="step1-2"></div>
+        <div class="step" id="step1-3"></div>
+      </div>
+
+      <div id="reg-step1">
+        <div class="screen-sub" style="margin-bottom:20px;">Step 1 of 3 — Personal details</div>
+        <div class="input-group">
+          <label class="input-label">Full Name</label>
+          <input class="input" type="text" placeholder="e.g. Raj Kumar" id="reg-name"/>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Mobile Number</label>
+          <input class="input" type="tel" placeholder="+91 98765 43210" id="reg-phone"/>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Delivery Platform</label>
+          <select class="input" id="reg-platform">
+            <option value="">Select platform</option>
+            <option>Zomato</option>
+            <option>Swiggy</option>
+            <option>Dunzo</option>
+            <option>Blinkit</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Partner / Employee ID</label>
+          <input class="input" type="text" placeholder="e.g. ZOM-2024-88431" id="reg-id"/>
+        </div>
+        <button class="btn btn-primary" onclick="regNext1()">Continue →</button>
+      </div>
+
+      <div id="reg-step2" style="display:none;">
+        <div class="screen-sub" style="margin-bottom:20px;">Step 2 of 3 — Your delivery zone</div>
+        <div class="input-group">
+          <label class="input-label">City</label>
+          <select class="input" id="reg-city">
+            <option>Chennai</option>
+            <option>Mumbai</option>
+            <option>Bangalore</option>
+            <option>Hyderabad</option>
+            <option>Delhi</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Primary Zone / Pin Code</label>
+          <input class="input" type="text" placeholder="e.g. 600001" id="reg-pin"/>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Average Weekly Earnings (₹)</label>
+          <input class="input" type="number" placeholder="e.g. 5000" id="reg-earnings"/>
+        </div>
+        <div class="input-group">
+          <label class="input-label">UPI ID for Payouts</label>
+          <input class="input" type="text" placeholder="e.g. raj@gpay" id="reg-upi"/>
+        </div>
+        <button class="btn btn-primary" onclick="regNext2()">Continue →</button>
+        <button class="btn btn-outline" onclick="regBack1()" style="margin-top:8px;">← Back</button>
+      </div>
+
+      <div id="reg-step3" style="display:none;">
+        <div class="screen-sub" style="margin-bottom:20px;">Step 3 of 3 — Confirm & activate</div>
+        <div class="card">
+          <div class="card-label">Registration Summary</div>
+          <div class="divider"></div>
+          <div class="row"><span class="row-label">Name</span><span class="row-value" id="summary-name">—</span></div>
+          <div class="row"><span class="row-label">Platform</span><span class="row-value" id="summary-platform">—</span></div>
+          <div class="row"><span class="row-label">Zone</span><span class="row-value" id="summary-zone">—</span></div>
+          <div class="row"><span class="row-label">UPI</span><span class="row-value" id="summary-upi">—</span></div>
+        </div>
+        <div class="card" style="background:rgba(59,130,246,0.05);border-color:rgba(59,130,246,0.2);">
+          <div style="font-size:13px;color:var(--muted2);line-height:1.6;">By registering, you agree to allow KAVACH AI to monitor environmental conditions in your delivery zone and verify your physical presence during disruption events using device sensor data.</div>
+        </div>
+        <button class="btn btn-success" onclick="completeReg()">✓ Activate My Account</button>
+        <button class="btn btn-outline" onclick="regBack2()" style="margin-top:8px;">← Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: DASHBOARD / POLICY -->
+  <div class="screen" id="screen-dashboard">
+    <div class="screen-body">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;margin-top:8px;">
+        <div>
+          <div style="font-size:13px;color:var(--muted2);">Good morning 👋</div>
+          <div style="font-size:22px;font-weight:700;" id="dash-name">Raj Kumar</div>
+        </div>
+        <div class="badge badge-success">● Active</div>
+      </div>
+
+      <!-- Active policy card -->
+      <div class="card" style="background:linear-gradient(135deg,#1e3a5f,#1a2235);border-color:rgba(59,130,246,0.3);">
+        <div class="card-label" style="color:var(--accent2);">Active Policy</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+          <div>
+            <div style="font-size:20px;font-weight:700;" id="dash-plan">Standard Plan</div>
+            <div style="font-size:13px;color:var(--muted2);margin-top:2px;">Renews Sunday</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:28px;font-weight:700;color:var(--success);" id="dash-coverage">₹800</div>
+            <div style="font-size:12px;color:var(--muted2);">max payout</div>
+          </div>
+        </div>
+        <div class="divider" style="margin:14px 0;"></div>
+        <div style="display:flex;justify-content:space-between;">
+          <div><div style="font-size:11px;color:var(--muted2);">Weekly Premium</div><div style="font-size:16px;font-weight:600;margin-top:2px;" id="dash-premium">₹30</div></div>
+          <div><div style="font-size:11px;color:var(--muted2);">Zone</div><div style="font-size:16px;font-weight:600;margin-top:2px;" id="dash-zone">Chennai – 600001</div></div>
+          <div><div style="font-size:11px;color:var(--muted2);">Platform</div><div style="font-size:16px;font-weight:600;margin-top:2px;" id="dash-platform">Zomato</div></div>
+        </div>
+      </div>
+
+      <!-- Zone status -->
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--muted2);">ZONE CONDITIONS</div>
+      <div class="trigger-card">
+        <div class="trigger-icon">🌧️</div>
+        <div class="trigger-info">
+          <div class="trigger-name">Rainfall</div>
+          <div class="trigger-condition">Threshold: 60mm / 24h</div>
+        </div>
+        <div><div class="badge badge-warning">42mm</div></div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-icon">🌡️</div>
+        <div class="trigger-info">
+          <div class="trigger-name">Temperature</div>
+          <div class="trigger-condition">Threshold: 42°C</div>
+        </div>
+        <div><div class="badge badge-success">38°C</div></div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-icon">😷</div>
+        <div class="trigger-info">
+          <div class="trigger-name">Air Quality (AQI)</div>
+          <div class="trigger-condition">Threshold: AQI 300</div>
+        </div>
+        <div><div class="badge badge-success">AQI 112</div></div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-icon">🚨</div>
+        <div class="trigger-info">
+          <div class="trigger-name">Civic Curfew</div>
+          <div class="trigger-condition">Government alert monitoring</div>
+        </div>
+        <div><div class="badge badge-success">Clear</div></div>
+      </div>
+
+      <button class="btn btn-outline" style="margin-top:8px;" onclick="showScreen('screen-policy')">Manage Policy →</button>
+    </div>
+    <div class="nav">
+      <div class="nav-item active" onclick="showScreen('screen-dashboard')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="showScreen('screen-policy')"><div class="nav-icon">📋</div><div class="nav-label">Policy</div></div>
+      <div class="nav-item" onclick="showScreen('screen-premium')"><div class="nav-icon">📊</div><div class="nav-label">Premium</div></div>
+      <div class="nav-item" onclick="showScreen('screen-claims')"><div class="nav-icon">💳</div><div class="nav-label">Claims</div></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: POLICY MANAGEMENT -->
+  <div class="screen" id="screen-policy">
+    <div class="screen-body">
+      <div style="margin-bottom:20px;margin-top:8px;">
+        <div class="screen-title">Insurance Policy</div>
+        <div class="screen-sub">Manage your coverage plan</div>
+      </div>
+
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--muted2);">CHOOSE YOUR PLAN</div>
+
+      <div class="plan-card" id="plan-basic" onclick="selectPlan('basic')">
+        <div class="plan-header">
+          <div class="plan-name">🔵 Basic</div>
+          <div class="plan-price">₹20 <span>/ week</span></div>
+        </div>
+        <div class="plan-coverage">Max payout: ₹500 · 1% of avg. weekly earnings</div>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted2);">Rain · Heat · AQI triggers</div>
+      </div>
+
+      <div class="plan-card selected" id="plan-standard" onclick="selectPlan('standard')">
+        <div style="margin-bottom:8px;"><span class="badge badge-info">Most Popular</span></div>
+        <div class="plan-header">
+          <div class="plan-name">⚡ Standard</div>
+          <div class="plan-price">₹30 <span>/ week</span></div>
+        </div>
+        <div class="plan-coverage">Max payout: ₹800 · 1.5% of avg. weekly earnings</div>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted2);">Rain · Heat · AQI · Curfew triggers</div>
+      </div>
+
+      <div class="plan-card" id="plan-premium" onclick="selectPlan('premium')">
+        <div class="plan-header">
+          <div class="plan-name">🌟 Premium</div>
+          <div class="plan-price">₹50 <span>/ week</span></div>
+        </div>
+        <div class="plan-coverage">Max payout: ₹1,200 · 2% of avg. weekly earnings</div>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted2);">All triggers + priority verification</div>
+      </div>
+
+      <div class="card" style="margin-top:4px;">
+        <div class="card-label">What's covered</div>
+        <div class="divider"></div>
+        <div class="row"><span class="row-label">🌧️ Heavy Rainfall</span><span class="row-value mono">&gt; 60mm / 24h</span></div>
+        <div class="row"><span class="row-label">🌡️ Extreme Heat</span><span class="row-value mono">&gt; 42°C</span></div>
+        <div class="row"><span class="row-label">😷 Severe Pollution</span><span class="row-value mono">AQI &gt; 300</span></div>
+        <div class="row"><span class="row-label">🚨 Civic Curfew</span><span class="row-value mono">Gov. Alert</span></div>
+      </div>
+
+      <button class="btn btn-primary" onclick="updatePlan()" style="margin-top:4px;">Confirm Plan Selection</button>
+    </div>
+    <div class="nav">
+      <div class="nav-item" onclick="showScreen('screen-dashboard')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item active" onclick="showScreen('screen-policy')"><div class="nav-icon">📋</div><div class="nav-label">Policy</div></div>
+      <div class="nav-item" onclick="showScreen('screen-premium')"><div class="nav-icon">📊</div><div class="nav-label">Premium</div></div>
+      <div class="nav-item" onclick="showScreen('screen-claims')"><div class="nav-icon">💳</div><div class="nav-label">Claims</div></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: DYNAMIC PREMIUM -->
+  <div class="screen" id="screen-premium">
+    <div class="screen-body">
+      <div style="margin-bottom:20px;margin-top:8px;">
+        <div class="screen-title">Dynamic Premium</div>
+        <div class="screen-sub">AI-powered weekly risk pricing</div>
+      </div>
+
+      <div class="card" style="text-align:center;padding:24px;">
+        <div class="card-label">This Week's Premium</div>
+        <div style="font-size:48px;font-weight:700;color:var(--accent);margin:8px 0;" id="calc-premium">₹34</div>
+        <div class="badge badge-warning" id="risk-badge">Elevated Risk · 1.13×</div>
+        <div style="font-size:13px;color:var(--muted2);margin-top:8px;">Base: ₹30 · Multiplier applied by AI model</div>
+      </div>
+
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--muted2);">RISK FACTORS (Random Forest Model)</div>
+
+      <div class="card">
+        <div class="row">
+          <span class="row-label">7-day rainfall</span>
+          <span class="row-value">42mm <span class="badge badge-warning" style="margin-left:6px;">↑</span></span>
+        </div>
+        <div style="margin-bottom:8px;">
+          <div class="meter-bar"><div class="meter-fill" style="width:70%;background:var(--warning);"></div></div>
+        </div>
+        <div class="row">
+          <span class="row-label">Forecast probability</span>
+          <span class="row-value">68% rain</span>
+        </div>
+        <div style="margin-bottom:8px;">
+          <div class="meter-bar"><div class="meter-fill" style="width:68%;background:var(--accent);"></div></div>
+        </div>
+        <div class="row">
+          <span class="row-label">Zone disruption rate</span>
+          <span class="row-value">4.2 / year</span>
+        </div>
+        <div style="margin-bottom:8px;">
+          <div class="meter-bar"><div class="meter-fill" style="width:42%;background:var(--success);"></div></div>
+        </div>
+        <div class="row">
+          <span class="row-label">Season</span>
+          <span class="row-value">🌧️ Pre-monsoon</span>
+        </div>
+        <div class="row">
+          <span class="row-label">Current AQI</span>
+          <span class="row-value">112 <span class="badge badge-success">Safe</span></span>
+        </div>
+        <div class="row">
+          <span class="row-label">Your claim history</span>
+          <span class="row-value">1 claim (52 weeks)</span>
+        </div>
+      </div>
+
+      <div class="card" style="background:rgba(59,130,246,0.05);border-color:rgba(59,130,246,0.2);">
+        <div style="font-size:12px;color:var(--muted2);line-height:1.7;">
+          <div style="font-weight:600;color:var(--text);margin-bottom:6px;">Why did my premium change?</div>
+          Pre-monsoon rainfall patterns in Chennai zone 600001 are 18% above historical average this week. The Random Forest model has applied a <strong style="color:var(--warning);">1.13× multiplier</strong> to your base premium. This is well within the 2.0× cap. You'll be notified 7 days before any future change.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Actuarial Snapshot</div>
+        <div class="divider"></div>
+        <div class="row"><span class="row-label">Target loss ratio</span><span class="row-value">90%</span></div>
+        <div class="row"><span class="row-label">Expected events/year</span><span class="row-value">4–6</span></div>
+        <div class="row"><span class="row-label">Reinsurance threshold</span><span class="row-value mono">1-in-10yr</span></div>
+        <div class="row"><span class="row-label">Max multiplier cap</span><span class="row-value">2.0×</span></div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-item" onclick="showScreen('screen-dashboard')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="showScreen('screen-policy')"><div class="nav-icon">📋</div><div class="nav-label">Policy</div></div>
+      <div class="nav-item active" onclick="showScreen('screen-premium')"><div class="nav-icon">📊</div><div class="nav-label">Premium</div></div>
+      <div class="nav-item" onclick="showScreen('screen-claims')"><div class="nav-icon">💳</div><div class="nav-label">Claims</div></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: CLAIMS -->
+  <div class="screen" id="screen-claims">
+    <div class="screen-body">
+      <div style="margin-bottom:20px;margin-top:8px;">
+        <div class="screen-title">Claims</div>
+        <div class="screen-sub">Automatic — no action needed</div>
+      </div>
+
+      <!-- Active alert -->
+      <div class="alert-banner">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-text"><strong>Cyclone Alert — Chennai</strong><br/>Rainfall: 71mm in last 24h · Threshold crossed · Claim auto-generated</div>
+      </div>
+
+      <button class="btn btn-success" onclick="triggerPayout()" style="margin-bottom:20px;">
+        ⚡ Simulate Trigger & Payout
+      </button>
+
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--muted2);">ACTIVE TRIGGERS</div>
+      <div class="trigger-card" style="border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.05);">
+        <div class="trigger-icon">🌧️</div>
+        <div class="trigger-info">
+          <div class="trigger-name">Heavy Rainfall</div>
+          <div class="trigger-condition">71mm recorded · Threshold: 60mm</div>
+        </div>
+        <div class="badge badge-danger">FIRED</div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-icon">🌡️</div>
+        <div class="trigger-info">
+          <div class="trigger-name">Extreme Heat</div>
+          <div class="trigger-condition">38°C · Threshold: 42°C</div>
+        </div>
+        <div class="badge badge-success">Safe</div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-icon">😷</div>
+        <div class="trigger-info">
+          <div class="trigger-name">Air Quality</div>
+          <div class="trigger-condition">AQI 112 · Threshold: 300</div>
+        </div>
+        <div class="badge badge-success">Safe</div>
+      </div>
+      <div class="trigger-card">
+        <div class="trigger-icon">🚨</div>
+        <div class="trigger-info">
+          <div class="trigger-name">Civic Curfew</div>
+          <div class="trigger-condition">No active government alert</div>
+        </div>
+        <div class="badge badge-success">Clear</div>
+      </div>
+
+      <div style="font-size:13px;font-weight:600;margin:16px 0 10px;color:var(--muted2);">CLAIM HISTORY</div>
+      <div class="history-item">
+        <div class="history-dot"></div>
+        <div class="history-info">
+          <div class="history-title">Heavy Rainfall — Cyclone Michaung</div>
+          <div class="history-date">Dec 4, 2024 · Auto-verified</div>
+        </div>
+        <div class="history-amount">+₹800</div>
+      </div>
+      <div class="history-item">
+        <div class="history-dot pending"></div>
+        <div class="history-info">
+          <div class="history-title">AQI Alert — Diwali Period</div>
+          <div class="history-date">Nov 1, 2024 · Soft-flag cleared</div>
+        </div>
+        <div class="history-amount" style="color:var(--warning);">+₹800</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-item" onclick="showScreen('screen-dashboard')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="showScreen('screen-policy')"><div class="nav-icon">📋</div><div class="nav-label">Policy</div></div>
+      <div class="nav-item" onclick="showScreen('screen-premium')"><div class="nav-icon">📊</div><div class="nav-label">Premium</div></div>
+      <div class="nav-item active" onclick="showScreen('screen-claims')"><div class="nav-icon">💳</div><div class="nav-label">Claims</div></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 6: PAYOUT SUCCESS -->
+  <div class="screen" id="screen-payout">
+    <div class="screen-body">
+      <div class="payout-screen">
+        <div class="payout-circle">✓</div>
+        <div style="font-size:28px;font-weight:700;margin-bottom:8px;">₹800 Credited</div>
+        <div style="font-size:15px;color:var(--muted2);margin-bottom:24px;">Sent to <span id="payout-upi" style="color:var(--accent)">raj@gpay</span></div>
+        <div class="card" style="width:100%;text-align:left;">
+          <div class="row"><span class="row-label">Trigger</span><span class="row-value">Heavy Rainfall (71mm)</span></div>
+          <div class="row"><span class="row-label">Verification</span><span class="row-value badge badge-success">Sensor verified</span></div>
+          <div class="row"><span class="row-label">Time to payout</span><span class="row-value">4.2 seconds</span></div>
+          <div class="row"><span class="row-label">Claim ID</span><span class="row-value mono">#CLM-2025-00471</span></div>
+          <div class="row"><span class="row-label">Plan</span><span class="row-value" id="payout-plan">Standard</span></div>
+        </div>
+        <div style="font-size:13px;color:var(--muted2);margin-top:8px;margin-bottom:24px;text-align:center;line-height:1.6;">No claim form filed.<br/>No documents uploaded.<br/>No waiting period.</div>
+        <button class="btn btn-outline" onclick="showScreen('screen-dashboard')" style="width:100%;">← Back to Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // State
+  const state = {
+    name: 'Raj Kumar',
+    platform: 'Zomato',
+    city: 'Chennai',
+    pin: '600001',
+    upi: 'raj@gpay',
+    plan: 'standard',
+    premium: 30,
+    coverage: 800,
+    registered: false
+  };
+
+  const plans = {
+    basic:    { name: 'Basic',    premium: 20, coverage: 500 },
+    standard: { name: 'Standard', premium: 30, coverage: 800 },
+    premium:  { name: 'Premium',  premium: 50, coverage: 1200 }
+  };
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    updateDashboard();
+  }
+
+  function regNext1() {
+    const name = document.getElementById('reg-name').value || 'Raj Kumar';
+    const phone = document.getElementById('reg-phone').value;
+    const platform = document.getElementById('reg-platform').value || 'Zomato';
+    const pid = document.getElementById('reg-id').value;
+    state.name = name;
+    state.platform = platform;
+    document.getElementById('reg-step1').style.display = 'none';
+    document.getElementById('reg-step2').style.display = 'block';
+    document.getElementById('step1-2').classList.add('done');
+  }
+
+  function regBack1() {
+    document.getElementById('reg-step2').style.display = 'none';
+    document.getElementById('reg-step1').style.display = 'block';
+    document.getElementById('step1-2').classList.remove('done');
+  }
+
+  function regNext2() {
+    const city = document.getElementById('reg-city').value;
+    const pin = document.getElementById('reg-pin').value || '600001';
+    const upi = document.getElementById('reg-upi').value || 'raj@gpay';
+    state.city = city;
+    state.pin = pin;
+    state.upi = upi;
+    document.getElementById('summary-name').textContent = state.name;
+    document.getElementById('summary-platform').textContent = state.platform;
+    document.getElementById('summary-zone').textContent = `${state.city} – ${state.pin}`;
+    document.getElementById('summary-upi').textContent = state.upi;
+    document.getElementById('reg-step2').style.display = 'none';
+    document.getElementById('reg-step3').style.display = 'block';
+    document.getElementById('step1-3').classList.add('done');
+  }
+
+  function regBack2() {
+    document.getElementById('reg-step3').style.display = 'none';
+    document.getElementById('reg-step2').style.display = 'block';
+    document.getElementById('step1-3').classList.remove('done');
+  }
+
+  function completeReg() {
+    state.registered = true;
+    updateDashboard();
+    showScreen('screen-policy');
+  }
+
+  function updateDashboard() {
+    document.getElementById('dash-name').textContent = state.name;
+    document.getElementById('dash-plan').textContent = plans[state.plan].name + ' Plan';
+    document.getElementById('dash-coverage').textContent = '₹' + plans[state.plan].coverage;
+    document.getElementById('dash-premium').textContent = '₹' + plans[state.plan].premium;
+    document.getElementById('dash-zone').textContent = state.city + ' – ' + state.pin;
+    document.getElementById('dash-platform').textContent = state.platform;
+    document.getElementById('payout-upi').textContent = state.upi;
+    document.getElementById('payout-plan').textContent = plans[state.plan].name;
+  }
+
+  function selectPlan(p) {
+    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('plan-' + p).classList.add('selected');
+    state.plan = p;
+  }
+
+  function updatePlan() {
+    updateDashboard();
+    showScreen('screen-dashboard');
+  }
+
+  function triggerPayout() {
+    showScreen('screen-payout');
+  }
+
+  // Init
+  updateDashboard();
+</script>
+</body>
+</html>
